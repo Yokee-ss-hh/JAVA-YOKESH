@@ -1,0 +1,120 @@
+Thread class has 8 constructors
+1) Thread()
+2) Thread(Runnable target)
+3) Thread(name)
+4) Thread(Runnable target, String name)
+5) Thread(ThreadGroup group, String name)
+6) Thread(ThreadGroup group, Runnable target)
+7) Thread(ThreadGroup group, Runnable target, String name)
+8) Thread(ThreadGroup group, Runnable target, String name, long stackSize)
+
+------------------------------------sleep()---------------------------------------------
+Static and native method of Thread class
+public static native void sleep(............) throws InterruptedException;
+
+Thread.sleep(long milliSeconds) throws InterruptedException;
+Thread.sleep(long milliSeconds, int nanoSeconds) throws InterruptedException;
+
+When sleep() is used, Make sure to use Try-Catch block
+
+Sleep method will not release a lock on the object. After sleeping time, The execution will be continued
+When a thread is sleeping, Another thread may get a chance for processor
+
+----------------------------------interrupt()------------------------------------------------
+Instance method of Thread class object which is used to interrupt the sleeping thread
+If any thread is in sleeping or waiting state (i.e. sleep() or wait() is invoked),
+calling the interrupt() method on the thread, breaks out the sleeping or waiting state
+throwing InterruptedException. If the thread is not in the sleeping or waiting state,
+calling the interrupt() method performs normal behavior and will not interrupt the thread
+but sets the interrupt flag to true.
+
+public void interrupt();
+
+--------------------------------------yield()------------------------------------------------
+yielded thread will not give up lock on the object
+1) Yield method gives hint to the scheduler that the current thread is willing to yield
+its current use of a processor to other waiting threads.
+2) As soon as a thread gives yield(), the thread goes to waiting/ runnable state and other waiting threads of
+same priority of yielded thread will get a processor.
+Let's say there are 4 threads t1, t2, t3, t4 along with main thread "main". If "t1" gives yield() , "t1" will go
+to runnable state along with t2,t3,t4 and "main". Now, Thread Scheduler will decide who gets the chance either
+"t2" or "t3" or "t4" or "main" which has equal priority of "t1".
+If multiple threads has same priority of "t1", Then ThreadScheduler decides which thread gets a chance.
+If none of the threads has equal or more priority than "t1". Then, "t1" gets chance again.
+Again, This depends on ThreadScheduler algorithm such as less time taking task or first come, first served
+3) The yield() basically means that the thread is not doing anything particularly important
+and if any other threads or processes need to be run, they should run.
+Otherwise, the current thread will continue to run.
+NOTE: The thread that yielded may or may not get immediate chance again, depends on ThreadScheduler algorithm
+4) OS can ignore yield() invoked by any thread
+public static native void yield();
+
+-----------------------------------------join()-------------------------------------------------------
+
+1) public final void join() throws InterruptedException; -> This java thread join method puts the current thread on wait until the thread on which it’s called is dead.
+If the thread is interrupted, it throws InterruptedException.
+2) public final synchronized void join(long millis) throws InterruptedException; -> This java thread join method is used to wait for the thread on which it’s called
+to be dead or wait for specified milliseconds. Since thread execution depends on OS implementation.
+It does not guarantee that the current thread will wait only for given time
+3) public final synchronized void join(long millis, int nanos) throws InterruptedException; -> This java thread join method is used to wait for thread to die for given milliseconds plus nanoseconds.
+
+Example: Let's say there are 2 threads, "t1" and main thread. If I call t1.join() that means, main thread waits
+until "t1" thread completes all it's execution and goes to dead state.
+We can limit waiting time by using overloading methods of join() method accordingly.
+
+----------------------------------wait(), notify() and notifyAll()----------------------------------------
+Let's say there are 2 threads "t1" and "t2"
+if object.wait() is called by "t1" then, "t1" goes to wait state-1 until object.notify() is called by another
+thread "t2".
+After "t2" executes and gives up the lock held on the object, then the control will go to the thread in which
+object.wait() is called upon.
+The thread on which object.wait() is called will give up lock on the object immediately
+The thread on which object.notify() is called will/ will not give up lock on the object immediately
+For detailed info, Look into the explanation in "WaitNotifyNotifyAllMethods.java" class
+
+These 3 methods belongs to the Object class and only these 3 methods in multi-threading
+which gives up the lock on any object.
+
+Syntax of wait(), notify() and notifyAll() methods:
+
+public final void wait() throws InterruptedException;
+public final native void wait(long milliSeconds) throws InterruptedException;
+public final void wait(long milliSeconds, int nanos) throws InterruptedException;
+
+public final native void notify();
+
+public final native void notifyAll();
+
+------------------------------------------Daemon Threads---------------------------------------
+Daemon threads always runs in background and supports non-daemon threads
+Example of daemon thread is Garbage collector
+We can check and set any thread using isDaemon() and setDaemon() methods available
+1) public final boolean isDaemon()
+2) public final void setDaemon(boolean on)
+We cannot convert any thread to daemon thread after it's execution is started as t.start()
+If we try to do that Java throws IllegalThreadStateException
+Note: We cannot set main thread to Daemon thread as main thread is started by JVM when the main method
+is called. So, We can't set main thread as Daemon thread using setDaemon() method, If we try to do so It
+throws IllegalThreadStateException.
+Similarly, If we want our created threads to make them as "Daemon Threads" we can do that before their
+start state. Cannot set them to Daemon once they start.
+If parent thread is Daemon, Then automatically child thread is daemon and voce versa is true
+If there are 2 daemon threads and 2 non daemon threads, If non daemon threads completes their execution
+and immediately daemon threads will go to dead state irrespective of their state.
+If Non daemon threads completes their execution and daemon thread is in middle of execution, Then JVM
+forces daemon thread to go to dead state.
+The reason is: There is no dependency on daemon threads if non daemon threads completes their job, as daemon
+threads works for non daemon threads and supports them through the execution.
+
+---------------------------Static Synchronized methods/blocks examples--------------------------
+Refer StaticSynchronizedMethodExample1.java and StaticSynchronizedMethodExample2.java files
+For difference b/w static block and static method -> Refer SynchronizedBlocksVsMethods.java file
+
+--------------------------Dead Lock-------------------------------
+DeadLock situation occurs only in Synchronized methods/blocks only
+Let's say there are 2 threads and 2 objects
+Thread 1 holds lock on object 1 and Thread 2 holds lock on object 2
+Thread 1 wants lock on object 2 and Thread 2 wants lock on object 1
+Now, Thread 1 waits until Thread 2 removes lock on object 2
+Similarly, Thread 2 waits until Thread 1 removes lock on object 1
+This is deadlock situation

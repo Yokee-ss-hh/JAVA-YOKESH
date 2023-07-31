@@ -1,0 +1,215 @@
+Collection Interface:
+Collection interface extends Iterable
+1) size()
+2) isEmpty()
+3) contains(element)
+4) iterator()
+5) toArray()
+6) add(element)
+7) addAll()
+8) remove(element)
+9) removeAll(Collection collection)
+10) clear()
+11) equals()
+12) hashCode()
+13) removeIf(Predicate predicate)
+14) retainAll(Collection collection)
+15) containsAll(Collection collection)
+
+List interface:
+List extends Collection
+1) of(element1, element2...)
+2) addAll(index, Collection collection)
+3) replaceAll(UnaryOperator)
+4) sort()
+5) get(index)
+6) get(index,value)
+7) add(index,element)
+8) remove(index)
+9) indexOf()
+10) lastIndexOf()
+11) listIterator()
+12) listIterator(index)
+13) subList(start,end)
+
+ArrayList class:
+ArrayList extends AbstractList
+AbstractList extends AbstractCollection
+AbstractList implements List
+AbstractCollection implements Collection
+1) clone()
+2) forEach()
+
+Queue interface:
+Queue interface extends Collection
+1) offer(element): similar to add() method from Collections interface
+2) remove(): Removes head from the queue and returns it, Throws exception if queue is empty
+3) poll(): Removes head from the queue and returns it, Throws exception if queue is empty
+4) element(): Returns head element of the queue, Returns null if queue is empty
+5) peek(): Returns head element of the queue, Returns null if queue is empty
+
+PriorityQueue class:
+PriorityQueue extends AbstractQueue
+AbstractQueue extends AbstractCollection
+AbstractCollection implements Collection
+AbstractQueue implements Queue
+1) PriorityQueue<T>(Comparator comparator); -> Depending on increasing/ decreasing comparator
+
+Deque interface:
+Deque extends Queue interface
+1) addFirst()
+2) addLast()
+3) offerFirst()
+4) offerLast()
+5) removeFirst()
+6) removeLast()
+7) pollFirst()
+8) pollLast()
+9) getFirst()
+10) getLast()
+11) peekFirst()
+12) peekLast()
+13) removeFirstOccurrence()
+14) removeLastOccurrence()
+15) descendingIterator()
+16) pop()
+17) push()
+
+ArrayDeque class:
+ArrayDeque extends AbstractCollection
+ArrayDeque implements Deque
+- All methods in deque interface can be used in this class
+
+LinkedList class:
+LinkedList implements Deque and List
+LinkedList implements AbstractSequentialList
+AbstractSequentialList extends AbstractList
+- All methods from List and Deque can be used in this class
+
+Map interface:
+1) size()
+2) isEmpty()
+3) containsKey(Object key)
+4) containsValue(Object value)
+5) get(Object key)
+6) put(key,value)
+7) remove(key)
+8) putAll(Map)
+9) clear()
+10) remove(key,value)
+11) getOrDefault(key,default_value)
+12) putIfAbsent()
+13) equals()
+14) keySet() -> returns Set
+15) values()
+16) entrySet() -> returns Set
+17) hashCode()
+18) forEach()
+19) replace(key,value)
+20) replace(key, old value, new value)
+21) replaceAll(BiFunction)
+
+Static methods of Map interface
+1) Map.of(key1, value1, key2, value2............)
+
+Entry is an interface inside Map interface
+Accessed as Map.Entry
+1) getKey()
+2) getValue()
+3) setValue()
+
+HashMap class:
+HashMap implements Map and AbstractMap
+AbstractMap implements Map
+1) Ordering is not maintained
+2) Multiple keys with same name is allowed, but the last key will override all other duplicate keys
+3) Multiple keys can have same values
+4) Allows 1 null key and multiple null values
+5) Initial capacity is 16 with load factor of 0.75
+6) get(key) -> returns value of specific key, else returns null
+7) Hashmap allows 1 null key and multiple null values
+8) It is non-synchronized
+9) Even though hashmap takes null key and values, Don't pass null keys/values using Map.of() factory method.
+Java raises exceptions if we do so. Always create key/value as null using put() method
+
+LinkedHashMap class:
+LinkedHashMap class extends HashMap and implements Map interface
+Initial Capacity of 16 and load factor of 0.75
+1) Only difference b/w HashMap and LinkedHashMap: LinkedHashMap maintains insertion order while HashMap doesn't
+2) LinkedHashMap is costly as it requires much memory
+3) LinkedHashMap uses Doubly Linked List internally
+4) Similar to HashMap, LinkedHashMap is not synchronized
+5) Even though LinkedHashMap takes null key and values, Don't pass null keys/values using Map.of() factory method.
+Java raises exceptions if we do so. Always create key/value as null using put() method
+
+SortedMap Interface:
+SortedMap interface extends Map interface
+
+TreeMap class:
+-Extends SortedMap
+-TreeMap extends AbstractMap and implements NavigableMap
+-AbstractMap implements Map
+-NavigableMap interface extends SortedMap
+No default capacity and load factor is allowed as TreeMap is implemented using Binary Tree using Nodes.
+1) Keys are stored in sorted order while in map interface keys are stored in random order
+2) By default sorting follows natural ordering i.e, ascending order. Can be customized by passing comparator in TreeMap class constructor
+3) TreeMap class implements SortedMap interface
+4) It cannot have null key, but multiple null values are allowed
+5) TreeMap is not synchronized
+6) In TreeMap constructors where it takes Map and SortedMap as parameter, Don't pass Map and SortedMap to constructor
+which uses Map.of() factory method.
+If Map.of() entries are not in sorted order, and we pass them to TreeMap constructor, then TreeMap will not sort
+them. We need to explicitly create a SortedMap/ Map based object and need to pass objects using put() method and send
+these object as a parameter to TreeMap, so that it recognizes and sorts it accordingly
+7) Even though TreeMap takes null values, Don't pass null values using Map.of() factory method.
+Java raises exceptions if we do so. Always create key/value as null using put() method
+
+
+Set interface:
+Set interface extends Collection interface
+
+HashSet class:
+HashSet class extends AbstractSet and implements Set interface
+Initial capacity of 16 with load factor of 0.75
+HashSet methods internally uses HashMap methods for all operations
+All HashSet constructors uses HashMap constructors
+As HashSet implements Set, and it extends Collection interface, All methods in
+Collection interface can be used in HashSet class
+HashSet will not maintain any order
+Allows null values
+Hash set object is Non-Synchronized
+
+LinkedHashSet class
+LinkedHashSet extends HashSet, implements Set interface
+Initial capacity of 16 with load factor of 0.75
+All methods available in HashSet works for LinkedHashSet
+Only difference b/w HashSet and LinkedHashSet is ordering of elements
+In LinkedHashSet, insertion order is preserved.
+LinkedHashSet object is Non-Synchronized
+
+SortedSet interface:
+SortedSet interface extends Set interface
+SortedSet maintains natural ordering of elements (sorts by ascending order)
+We can change ordering using comparator
+Few methods are newly introduced in SortedSet interface:
+1) headSet() -> returns SortedSet
+2) tailSet() -> returns SortedSet
+3) first() -> returns Element
+4) last()  -> returns Element
+5) subSet() -> returns SortedSet
+
+TreeSet class:
+NavigableSet interface extends SortedSet
+TreeSet class extends AbstractSet and implements NavigableSet interface
+No initial capacity and load factor is available for Sorted Set implemented classes like TreeSet.
+As it grows as we add elements to it. So None of the constructor takes capacity and load factor.
+Maintains ascending order by default, Can change order of elements using comparator passed in Constructor.
+
+HashTable class:
+HashTable class extends dictionary class and implements Map interface
+We can use all methods of Map interface here as HashTable implements Map interface
+Initial capacity of 11 and load factor of 0.75
+-HashTable is synchronized
+-HashTable don't allow null keys and values
+-HashTable is slow when compared with HashMap
+-Will not preserve insertion ordering

@@ -1,0 +1,40 @@
+java.lang.Throwable is the root class for all exceptions and errors in java
+Throwable class implements serializable interface
+Exception class and Error class extends Throwable
+
+Checked Exceptions:
+These exceptions are thrown at compile time
+Should use try/catch (or) throws keyword at method level.
+Examples:
+1) InterruptedException
+2) IOException
+3) SQLException
+4) ClassNotFoundException
+
+UnChecked Exceptions:
+These exceptions will be raised at run time
+The classes that inherit from RuntimeException are known as UnChecked Exceptions
+At compile time, java won't force us to use try/catch (or) throws keyword.
+But, We need to use exception blocks to handle these exceptions
+Examples:
+All subclasses of RuntimeException such as:
+1) ArithmeticException -> 10/0 is the example for this exception
+2) NullPointerException
+3) NumberFormatException -> The NumberFormatException occurs when an attempt is made to convert a string with improper format into a numeric value
+4) IndexOutOfBoundsException -> ArrayIndexOutOfBoundsException and StringIndexOutOfBoundsException
+
+Error:
+All subclasses which extends Error class:
+1) StackOverflowError
+2) VirtualMachineError
+3) OutOfMemoryError
+
+
+Exceptions blocks:
+1) try: Exceptions will be raised from this block
+2) catch: Exceptions are handled here
+3) finally: This will be executed when error is there / error is not there
+
+1) throw: Used to throw exceptions in the code
+2) throws: Used in method declaration/signature which says that there may be a chance of the exception occurs in the method
+We need to use try-catch blocks to handle when this method is being called.
