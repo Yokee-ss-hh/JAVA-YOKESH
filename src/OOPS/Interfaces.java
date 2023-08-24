@@ -29,7 +29,7 @@ package OOPS;
 // But, In interfaces the case is different
 // Static methods of interfaces are not inherited to subclasses, so object of subclass cannot call interface
 // static method directly, so use Interface name to call interface static method
-// But, variables in interfaces can be accessed using subclass object even though they are static and final by default
+// Variables in interfaces are public, static and final by default, Use interface name to access them anywhere
 interface InterfaceOne{
     int x = 23;
     void method1();

@@ -1,0 +1,25 @@
+
+Factory vs Abstract Factory
+
+If interface is "Vehicle" then the subclasses are "Car", "Bike" and so .....on
+And all the subclasses want only 1 object of type "Petrol" variant
+In this case 1 interface and 'n' implementing subclasses, Then 1 factory is enough for creating all objects
+of subclasses.
+In this situation we need to use "Factory Design Pattern"
+
+Let's say all 'n' subclasses wants 2 variants of vehicle objects as ["Petrol Car", "Electric Car"], ["Petrol Bike", "Electric Bike"]
+..........so on
+Now In this case for each subclass that implements the Vehicle interface wants 2 objects 1 for Petrol variant
+and 1 for Electric variant
+That means 1 subclass has 2 objects that should be grouped under some roof. Similarly, if there are n subclasses
+that are implementing a interface then we need n*2 objects which are grouped into n sets.
+So, We need 1 factory for each subclass to implement and create 2 objects of type "Electric" and "Petrol" variants
+Similarly n factories for n subclasses to create 2 objects for each subclass
+**The Abstract Factory pattern allows you to create families of related objects that have a common theme or purpose.
+** Supporting above statement, The Abstract factory design pattern allows us to create families (petrol vehicle, diesel vehicle, electric vehicle....)
+of related vehicle objects (car, bike, lorry....) that have a common purpose.
+So using abstract factory dp, I can create 'n' number of car objects in which x are of petrol type objects
+and n-x are of electric type objects. Similarly, 'n' number of lorry objects in which x are petrol and n-x are electric....and so on...
+.......for bike, aeroplane...........
+That's why Abstract factory DP is also called factory of factories
+In this situation we need to use "Abstract Factory Design Pattern"
