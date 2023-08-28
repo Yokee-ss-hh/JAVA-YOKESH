@@ -214,5 +214,10 @@ public class ArrayStreams {
         // Use flatMap() to store as List<Integer> instead of List<List<Integer>>
         List<Integer> c3 = list1.stream().flatMap(x -> x.stream()).collect(Collectors.toList());
         System.out.println(c3);
+
+        // mapToInt
+        Stream<Integer> integerStream = Stream.of(1,2,3,4,5);
+        int[] integerStreamArray = integerStream.mapToInt(x -> x).toArray();
+        System.out.println(Arrays.toString(integerStreamArray));
     }
 }

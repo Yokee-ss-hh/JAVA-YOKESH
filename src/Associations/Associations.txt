@@ -1,0 +1,62 @@
+/*
+                        Relationships
+                              |
+                  -----------------------------
+                 |                             |
+            Inheritance (is-a)           Associations (has-a)
+                                              |
+                                      -------------------
+                                     |                   |
+                                Delegation    Aggregation and Composition
+ */
+// Association: Object on one class serves as an instance variable inside another class
+// Delegation: Delegation is about passing work from one object to another
+// Aggregation: Defines relationship between 2 objects (weak relationship)
+// Composition: Defines relationship between 2 objects (strong relationship)
+// Has-A -> Aggregation
+// Part-Of -> Composition
+// Is-A -> Inheritance
+
+Aggregation is a weak type of Association with partial ownership. For an Aggregation relationship
+we use the term *uses* to imply a weak *has-a* relationship. This is weak compared to Composition.
+Then again, weak meaning the linked components of the aggregator may survive the aggregations life-cycle
+without the existence of their parent objects. For example, a school department *uses* teachers.
+Any teacher may belong to more than one department. And so, if a department ceases to exist,
+the teacher will still exist.
+
+1) lifetime: objects have their own lifetime and there is no owner
+2) scope: death of parent will not affect child, Child can live independently
+3) relationship: has-A
+4) Strength: week
+5) Example: Car and driver. (Death of car will not affect driver, driver can live independently)
+6) Should not use final keyword
+7) UML symbol with open diamond
+
+Aggregation - I have an object which I've borrowed from someone else. When Foo dies, Bar may live on.
+
+public class Foo {
+    private Bar bar;
+    Foo(Bar bar) {
+       this.bar = bar;
+    }
+}
+
+Composition is a strong type of Association with full ownership. This is strong compared to the
+weak Aggregation. For a Composition relationship, we use the term *owns* to imply a strong *has-a* relationship.
+For example, a department *owns* courses, which means that any course's life-cycle depends on the department's
+life-cycle. Hence, if a department ceases to exist, the underlying courses will cease to exist as well.
+
+1) lifetime: Both parent and child lifetime will be controlled by parent
+2) scope: death of parent will also kill the child
+3) relationship: part-Of
+4) Strength: strong
+5) Example: Car and engine specific to that car, Human and his/her heart, Folder, and it's containing files
+If folder is deleted, it's files also deletes
+6) Should use final keyword
+7) UML symbol with filled diamond
+
+Composition - I own an object, and I am responsible for its lifetime. When Foo dies, so does Bar
+
+public class Foo {
+    private Bar bar = new Bar();
+}
