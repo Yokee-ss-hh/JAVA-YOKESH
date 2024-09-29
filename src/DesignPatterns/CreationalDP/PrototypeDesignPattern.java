@@ -1,117 +1,90 @@
-package DesignPatterns.CreationalDP;
+package org.dsa;
+import java.util.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
-abstract class Shape{
-    private int x;
-    private int y;
-    private String color;
-
-    public int getX() {
-        return x;
+// Shallow copy
+class Officer implements Cloneable{
+    private String name;
+    private Map<String,String> children;
+    public void setName(String name){
+        this.name = name;
     }
-
-    public void setX(int x) {
-        this.x = x;
+    public void setChildren(Map<String,String> map){
+        this.children = map;
     }
-
-    public int getY() {
-        return y;
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
-
-    public void setY(int y) {
-        this.y = y;
+    public String getName() {
+        return name;
     }
-
-    public String getColor() {
-        return color;
+    public Map<String, String> getChildren() {
+        return children;
     }
+}
 
-    public void setColor(String color) {
-        this.color = color;
+// Deep copy
+class Worker implements Cloneable{
+    private String name;
+    private Map<String,String> children;
+    public void setName(String name){
+        this.name = name;
     }
-
-    public Shape(){}
-    public Shape(Shape target){
-        if(target != null){
-            this.x = target.x;
-            this.y = target.y;
-            this.color = target.color;
+    public void setChildren(Map<String,String> map){
+        this.children = map;
+    }
+    public String getName() {
+        return name;
+    }
+    public Map<String, String> getChildren() {
+        return children;
+    }
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        Object object = super.clone();
+        Worker worker = (Worker) object;
+        worker.setName(new String(this.name));
+        Iterator<String> it = this.children.keySet().iterator();
+        // Deep Copy of field by field
+        String key;
+        Map<String, String> hm = new HashMap<>();
+        while (it.hasNext()) {
+            key = it.next();
+            hm.put(key, this.children.get(key));
         }
-    }
-    public abstract Shape clone();
-}
-
-class Circle extends Shape{
-
-    private static final String type = "CIRCLE";
-
-    @Override
-    public String toString() {
-        return "CIRCLE OBJECT";
-    }
-
-    private int radius;
-    public int getRadius() {
-        return radius;
-    }
-    public void setRadius(int radius) {
-        this.radius = radius;
-    }
-    public Circle(){}
-    @Override
-    public Shape clone() {
-        return new Circle(this);
-    }
-    public Circle(Circle target){
-        super(target);
-        if(target != null){
-            this.radius = target.radius;
-        }
+        worker.setChildren(hm);
+        return worker;
     }
 }
 
-class Rectangle extends Shape{
+public class Employee{
+    public static void main(String[] args) throws CloneNotSupportedException{
+        Officer officer = new Officer();
+        officer.setName("yokesh");
+        Map<String,String> map = new HashMap<>();
+        map.put("x","x");
+        map.put("y","y");
+        officer.setChildren(map);
 
-    private static final String type = "RECTANGLE";
-    @Override
-    public String toString() {
-        return "RECTANGLE OBJECT";
-    }
-    public Rectangle(){}
-    @Override
-    public Shape clone() {
-        return new Rectangle(this);
-    }
-    public Rectangle(Rectangle target){
-        super(target);
-    }
-}
+        Officer shallowClonedOfficer = (Officer) officer.clone();
 
-class ShapeCache{
-    public static Map<Integer, Shape> shapeMap = new HashMap<>();
-}
-public class PrototypeDesignPattern {
-    public static void main(String[] args) {
+        System.out.println(officer == shallowClonedOfficer);
+        System.out.println(officer.getChildren() == shallowClonedOfficer.getChildren());
+        System.out.println(officer.getName() == shallowClonedOfficer.getName());
 
-        Circle c1 = new Circle();
-        c1.setX(10);
-        c1.setY(20);
-        c1.setColor("GREEN");
-        c1.setRadius(15);
-        ShapeCache.shapeMap.put(1,c1);
+        // Even though objects are different, their data is still pointing to same address.
+        // We need to do deep copying.
 
-        Rectangle r1 = new Rectangle();
-        r1.setX(10);
-        r1.setY(20);
-        r1.setColor("WHITE");
-        ShapeCache.shapeMap.put(2,r1);
+        Worker worker = new Worker();
+        worker.setName("yokesh");
+        Map<String,String> map1 = new HashMap<>();
+        map1.put("x","x");
+        map1.put("y","y");
+        worker.setChildren(map1);
 
-        Circle clonedC1 = (Circle) ShapeCache.shapeMap.get(1).clone();
-        System.out.println(clonedC1.hashCode() == c1.hashCode());
-
-        Rectangle clonedR1 = (Rectangle) ShapeCache.shapeMap.get(2).clone();
-        System.out.println(clonedR1.hashCode() == r1.hashCode());
+        Worker deepClonedWorker = (Worker) worker.clone();
+        System.out.println(worker == deepClonedWorker);
+        System.out.println(worker.getChildren() == deepClonedWorker.getChildren());
+        System.out.println(worker.getName() == deepClonedWorker.getName());
     }
 }
