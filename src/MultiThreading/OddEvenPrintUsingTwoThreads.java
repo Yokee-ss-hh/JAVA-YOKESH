@@ -8,26 +8,22 @@ public class OddEvenPrintUsingTwoThreads {
         public void printOdd() throws InterruptedException {
             while(counter<=limit){
                 synchronized(object) {
-                   if(counter % 2 == 1){
-                       System.out.println("odd thread"+counter++);
-                       object.notify();
-                   }
-                   else{
-                       object.wait();
-                   }
+                    while(counter % 2 == 0){
+                        object.wait();
+                    }
+                    System.out.println("odd thread: "+counter++);
+                    object.notify();
                 }
             }
         }
         public void printEven() throws InterruptedException {
             while(counter<=limit){
                 synchronized(object) {
-                    if(counter % 2 == 0){
-                        System.out.println("even thread"+counter++);
-                        object.notify();
-                    }
-                    else{
+                    while(counter % 2 != 0){
                         object.wait();
                     }
+                    System.out.println("even thread: "+counter++);
+                    object.notify();
                 }
             }
         }
