@@ -30,7 +30,7 @@ e.execute(()->{
 
 2) submit(Callable<T> task)
 
-Future<String> result = e.submit({
+Future<String> result = e.submit(()->{
    return "Hello";
 });
 
