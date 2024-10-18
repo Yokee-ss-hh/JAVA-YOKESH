@@ -1,0 +1,102 @@
+Executors available in java.util.concurrent.Executor;
+
+Write @EnableAsync on top of @Configuration (or) on top of main method 
+
+First create a Configuration class with the following bean 
+
+@Bean(name="taskExecutor")
+public Executor taskExecutor(){
+
+ThreadPoolTaskExecutor t = new ThreadPoolTaskExecutor();
+t.setCorePoolSize(5);
+t.setMaxPoolSize(15);
+t.setQueueCapacity(25);
+t.setThreadNamePrefix("async");
+t.initialize();
+return t;
+}
+
+
+Inside any class, Now we can use this bean in 3 ways,
+
+@Autowired
+private Executor e;
+
+1) execute(Runnable task) -> Which do not return any value
+
+e.execute(()->{
+  System.out.println("Hello");
+});
+
+2) submit(Callable<T> task)
+
+Future<String> result = e.submit({
+   return "Hello";
+});
+
+result.get();
+
+3) invokeAll(Collection<? extends Callable<T>> tasks)
+
+List<Callable<String>> tasks = new ArrayList<>();
+
+tasks.add(()->{
+   return "Hello1";
+});
+
+tasks.add(()->{
+return "Hello2";
+});
+
+List<Future<String>> results = t.invokeAll(tasks);
+
+for(Future<String> result: results){
+   System.out.println(result.get());
+}
+
+4) invokeAny(Collection<? extends Callable<T>> tasks) -> In a group of callable tasks, it returns the first completed task. 
+
+List<Callable<String>> tasks = new ArrayList<>();
+
+tasks.add(()->{
+   return "Hello1";
+});
+
+tasks.add(()->{
+return "Hello2";
+});
+
+String result = t.invokeAny(tasks);
+System.out.println(result);
+
+-------------------------------------------------------------------
+Now instead of writing all these we can simply use @Async annotation in @Service layer methods
+
+1) execute() method replication of using @Async
+
+@Async("taskExecutor")
+public void doSomething1(){
+    System.out.println("Hello");
+} 
+
+2) submit() method replication Callable using @Async
+
+@Async("taskExecutor")
+public Future<String> doSomething1(){
+return CompletableFuture.supplyAsync(()->{
+   return "Hello";
+});
+}
+
+Now in controller, I can call this method. Let's say this service class name is HelloService
+
+In HelloController, 
+
+@Autowired
+private HelloService helloService;
+
+CompletableFuture<String> result = helloService.doSomething1();
+String finalResult = result.get();
+
+
+

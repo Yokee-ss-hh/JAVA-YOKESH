@@ -1,0 +1,103 @@
+First we need to create a xml file named hibernate.cfg.xml in src/main/resources with content as below:
+
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+        <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/your_database_name</property>
+        <property name="hibernate.connection.username">your_username</property>
+        <property name="hibernate.connection.password">your_password</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.format_sql">true</property>
+    </session-factory>
+</hibernate-configuration>
+
+1) Configuration Class: In org.hibernate.cfg package -> Reads configuration file which we created in src/main/resources and activates hibernate framework.
+It checks the xml file and verifies whether it is valid / not.  
+
+Configuration cfg = new Configuration();
+cfg.configure("hibernate.cfg.xml");
+
+2) SessionFactory Interface: Present in org.hibernate package. Used to create session factory object. Immutable and thread-safe
+It has a method called buildSessionFactory() which gathers the metadata which is in cfg object which we created using Configuration class
+From cfg object it takes jdbc information and creates jdbc object. 
+
+SessionFactory sessionFactory = cfg.buildSessionFactory(new StandardServiceRegistryBuilder().applySettings(cfg.getProperties()).build());
+
+3) Session Interface: Present in org.hibernate package and it used to build session object based on session factory object created in step2.
+session object is used to open session with database and can perform CRUD operations. 
+
+Session session = sessionFactory.openSession();
+
+We can also use getCurrentSession() method that returns Session bound to the current context which is usually managed by Transaction Manager.
+
+Session session = sessionFactory.getCurrentSession();
+
+4) Transaction Interface: The Transaction interface represents a single transaction. Transactions are started, committed, or rolled back using this interface.
+
+Transaction Lifecycle:
+i) Begin Transaction: beginTransaction() method using session object 
+
+Transaction transaction = session.beginTransaction();
+
+ii) Save the session: Save the entity class data using session ojbect
+
+session.save(emp);
+session.update();
+session.get();
+session.delete();
+
+iii) Commit the transaction: If all operations are successful, then transaction is commited using commit() using transaction object
+
+transaction.commit();
+
+iv) If error occurs, the transaction is rolled back using rollback() of transaction object.
+
+transaction.rollback(); 
+
+
+Keep i), ii) and iii) in try block and iv) in catch block. 
+
+
+-------------------
+
+
+HQL Queries:
+
+Transaction tx = session.beginTransaction();
+Query query = session.createQuery("from Employee"); -> from Employee is same as select * from Employee;
+List<Employee> empList = query.list();
+
+
+
+-----------------------------------------------------------------------------------------------------------------
+
+private static final int batchSize = 50;
+
+SessionFactory sessionFactory = cfg.buildSessionFactory(new StandardServiceRegistryBuilder().applySettings(cfg.getProperties()).build());
+
+Session session = sessionFactory.openSession();
+
+Transaction transaction = null;
+
+try{
+transaction.beginTransaction();
+for(int i=0;i<100000;i++){
+Employee emp = new Employee();
+session.save(emp);  --> saves object into hibernate first level cache
+if(i % batchSize == 0){
+session.flush(); --> pushes the data into database / can rollback as well
+session.clear(); --> releases the hibernate first level cache memory
+}
+}
+transaction.commit(); --> make changes permanently / cannot rollback
+session.close(); --> first level cache is cleared when session is closed
+}
+catch(Exception e){
+   transaction.rollback();
+}
+
+

@@ -1,0 +1,45 @@
+JDBC -> Java Database Connectivity -> A package comes under java.sql
+
+1) Get:
+
+String query = "Select * from employee where name = ?;";
+Connection connection = DriverManager.createConnection(url,username,password);
+PreparedStatement p = connection.prepareStatement();
+p.setString(1,"yokesh");
+ResultSet rs = p.executeQuery(query);
+while(rs.next()){
+System.out.println(rs.getId());
+System.out.println(rs.getName());
+System.out.println(rs.getCity());
+}
+
+2) Post:
+
+String query = "INSERT INTO books (title, author, price) VALUES (?, ?, ?);";
+Connection connection = DriverManager.createConnection(url,username,password);
+PreparedStatement p = connection.prepareStatement();
+p.setString(1,"hello");
+p.setString(2,"yokesh");
+p.setInteger(3,400);
+int rowsAffected = preparedStatement.executeUpdate();
+System.out.println(rowsAffected + " row(s) inserted.");
+
+3) Put/Patch:
+
+String query = "UPDATE books SET price = ? WHERE title = ?;";
+Connection connection = DriverManager.createConnection(url,username,password);
+PreparedStatement p = connection.prepareStatement();
+preparedStatement.setBigDecimal(1, new BigDecimal("50.00"));
+preparedStatement.setString(2, "Effective Java");
+int rowsAffected = preparedStatement.executeUpdate();
+System.out.println(rowsAffected + " row(s) inserted.");
+
+4) Delete:
+
+String query = "DELETE FROM books WHERE title = ?;";
+Connection connection = DriverManager.createConnection(url,username,password);
+PreparedStatement p = connection.prepareStatement();
+preparedStatement.setString(1, "Effective Java");
+int rowsAffected = preparedStatement.executeUpdate();
+System.out.println(rowsAffected + " row(s) inserted.");
+

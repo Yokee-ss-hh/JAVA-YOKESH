@@ -1,0 +1,132 @@
+src/main/resources -> application.properties file:
+
+spring.datasource.url=jdbc:mysql://localhost:3306/emp
+spring.datasource.username=root
+spring.datasource.password=root
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.database-platform = org.hibernate.dialect.MySQL5Dialect
+spring.jpa.generate-ddl=true
+spring.jpa.hibernate.ddl-auto=update
+
+Dialects: Dialects are database specific and it is used by hibernate to convert HQL language to sql language.
+If we are using SQL5 database, then we need to use org.hibernate.dialect.MySQL5Dialect
+If we are using Postgres database, then we need to use org.hibernate.dialect.PostgreSQLDialect
+
+generate-ddl: This generates ddl statements like create, update, delete and will not execute them on database. This property
+does not output these logs. We need below properties to see the generated ddls.
+
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+This ensures that ddls generated are printed on console
+
+ddl-auto: Used to manage how hibernate automatically handles the database schema.
+i) none: No schema generation is performed.
+ii) validate: Only validates the database schema to JPA entity
+iii) create: Drops the exisiting schema and creates again. All the data in tables will be lost.
+iv) create-drop: similar to create, but drops when application is stopped. All the data in tables will be lost. 
+v) create-only: Similar to create, but this creates schema only once, After starting of application, this will not re-create a new schema unlike create. Data is persisted. 
+vi) update: Creates new schema if not exists, will add data columns to the existing tables. schemas will not be dropped after application shutdown, data is persisted. 
+
+----------------------------------------------------
+1) @Entity -> Specifies a class is a entity 
+2) @Table(name = "users") -> Make a table with name as "users", If this is not specified and the class has marked with @Entity, Then the class name will be the table name
+3) @Id -> Marks the field as primary key 
+4) @Column(name="xyz") -> A column in a table 
+5) @GeneratedValue(strategy = GenerationType.IDENTITY) -> Insert a row without specifying a value for the ID. After inserting the row, ask the database for the last generated ID and database assigns new value to the Id
+   @GeneratedValue(startegy = GenerationType.SEQUENCE) -> Before inserting a new row, ask the database for the next sequence value, then insert this row with the returned sequence value as ID.
+   Identity vs Sequence -> The number of queries is thus the same in both cases. But, Hibernate uses by default a strategy that is more efficient for the sequence generator. In fact, when it asks for the next sequence value, it keeps th 50 (that's the dafault, IIRC, and it's configurable) next values in memory, and uses these 50 next values for the next 50 inserts. Only after 50 inserts, it goes to the database to get the 50 next values. This tremendously reduces the number of needed SQL queries needed for automatic ID generation.The identity strategy doesn't allow for such an optimization.
+   @GeneratedValue(strategy = GenerationType.AUTO) -> This strategy allows the JPA provider to choose the most appropriate strategy based on the underlying database and configuration.
+   @GeneratedValue(startegy = GenerationType.TABLE) -> In this strategy, a separate table is used to store and manage the next available primary key values. It provides portability across different databases.
+6) @OneToOne
+7) @OneToMany
+8) @ManyToMany
+9) @ManyToOne
+10) CLOB – Character Large Object will store large text data
+   BLOB – Binary Large Object is for storing binary data like image, audio, or video
+   @Lob
+   @Column(name = "photo", columnDefinition="BLOB")
+   private byte[] photo;
+   @Lob -> specifies that the database should store the property as Large Object. The columnDefinition in the @Column annotation defines the column type for the property.
+11)@Temporal -> @Temporal(TemporalType.DATE)
+                private Date birthDate;
+12)@JoinColumn and @JoinTable 
+13)@Query(value="") -> Use JPQL language 
+   @Query(value="",nativeQuery=true) -> Use native sql language
+14)@Param -> 
+    
+   @Query(nativeQuery=true, value="Select * from users u where u.email = :email")	
+   public User findByEmail(@Param("email") String email)
+
+-------------------------------------------------------------------------
+1) public interface CrudRepository<T,ID extends Serializable> extends Repository<T,ID>
+
+    <S extends T> S save(S entity);
+    T findOne(ID primaryKey);
+    Iterable<T> findAll();
+    Long count();
+    void delete(T entity);
+    boolean exists(ID primaryKey);
+	
+2) public interface PagingAndSortingRepository<T, ID extends Serializable> extends CrudRepository<T, ID>
+
+    Iterable<T> findAll(Sort sort);
+    Page<T> findAll(Pageable pageable);
+	
+3) public interface JpaRepository<T, ID extends Serializable> extends PagingAndSortingRepository<T, ID>
+
+    List<T> findAll();
+    List<T> findAll(Sort sort);
+    List<T> save(Iterable<? extends T> entities);
+    void flush();
+    T saveAndFlush(T entity);
+    void deleteInBatch(Iterable<T> entities);
+	
+Example:
+
+There are few books 
+
+Book b1 = new Book(1L, "Book A"); // properties = id and title
+Book b2 = new Book(2L, "Book B");
+Book b3 = new Book(3L, "Book C");
+Book b4 = new Book(4L, "Book D");
+Book b5 = new Book(5L, "Book E");
+Book b6 = new Book(6L, "Book F");
+
+Syntax:
+Sort sort = Sort.by(Sort.Direction.DESC, "column name")
+Pageable pageable = PageRequest.of(pageNo, pageSize, sort); // PageRequest implements Pageable 
+
+Example1:
+Sort sort = Sort.by(Sort.Direction.DESC, "title")
+Pageable pageable = PageRequest.of(0, 4, sort);
+return bookRepository.findAll(pageable);
+Output1:
+Book b6 = new Book(6L, "Book F");
+Book b5 = new Book(5L, "Book E");
+Book b4 = new Book(4L, "Book D");
+Book b3 = new Book(3L, "Book C");
+Example2:
+Sort sort = Sort.by(Sort.Direction.DESC, "title")
+Pageable pageable = PageRequest.of(1, 4, sort);
+Output2:
+Book b2 = new Book(2L, "Book B");
+Book b1 = new Book(1L, "Book A");
+
+We got 2 results even we passed size of 4, becuase In page 1 out of 6 results we extracted 4 already, so we will get 2 in page 2 as we have only 2 records left out of 6
+
+@Entity
+public class University {
+    @Id
+    private String id;
+    private String name;
+    private String address;
+    @OneToMany(fetch = FetchType.EAGER)
+    private List<Student> students;
+}
+
+
+fetch = FetchType.LAZY -> When University is loaded from DB, It only fetches id, name and address and will not load students, If we call the getter like getStudents() then it starts fetching. 
+fetch = FetchType.EAGER -> When University object is loaded from DB, JPA fetches id, name, address and students as well as by default jpa uses eager fetch.
+
+  
