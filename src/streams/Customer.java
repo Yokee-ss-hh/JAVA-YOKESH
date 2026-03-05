@@ -1,4 +1,4 @@
-package org.dsa.streams;
+package streams;
 
 public class Customer {
     public String name;

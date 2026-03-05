@@ -1,4 +1,4 @@
-package org.dsa.streams;
+package streams;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -96,7 +96,7 @@ public class Demo {
 
         Stream<Integer> s20 = Stream.of(4,8,5,1,2,3);
         Stream<Integer> s21 = s20.sorted();
-        System.out.println(s21.toList());
+        System.out.println(s21.toArray());
 
         Stream<Integer> s22 = Stream.of(1,2,3,4,5,6);
         IntStream s23 = s22.mapToInt(Integer::intValue);

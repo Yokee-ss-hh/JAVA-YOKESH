@@ -1,56 +1,57 @@
 package DesignPatterns.BehavioralDP;
-// The Template Design Pattern is a behavioral design pattern that defines the basic structure
-// of an algorithm in a superclass, while allowing subclasses to provide specific implementations
-// of certain steps of the algorithm without modifying its overall structure.
-// It promotes code reuse and enforces a common algorithm structure across multiple subclasses.
-abstract class Cafe{
-
-    // The below 3 methods are private as we are calling them inside the method prepareDrink()
-    // which is inside the class itself.
-     private void boilWater(){
+// It defines the skeleton (template) of an algorithm in a base class and lets subclasses override
+// specific steps without changing the overall algorithm structure.
+// Abstract class: Defines a template method and some steps
+// Concrete class: Implements few specific steps depending on their behavior and requirement
+abstract class Beverage{
+    public void makeBeverage(){
+        boilWater();
+        addLeaves();
+        addExtras();
+        pourInCup();
+    }
+    private void boilWater(){
         System.out.println("Boiling Water");
     }
-     private void pourInCup(){
-        System.out.println("Pouring in cup");
+
+    private void pourInCup(){
+        System.out.println("Pouring in the cup");
     }
-    private void stir(){
-        System.out.println("Stirring drink");
-    }
-    final void prepareDrink(){
-         boilWater();
-         addPowder();
-         addFluid();
-         stir();
-         pourInCup();
-    }
-    abstract void addPowder();
-     abstract void addFluid();
+    abstract void addLeaves();
+    abstract void addExtras();
 }
-class Tea extends Cafe{
+
+// concrete class 1
+class Tea extends Beverage{
     @Override
-    void addPowder() {
-        System.out.println("Adding tea powder");
+    void addLeaves() {
+        System.out.println("Adding tea leaves");
     }
+
     @Override
-    void addFluid() {
-        System.out.println("Adding cow milk");
+    void addExtras() {
+        System.out.println("Adding sugar and ginger");
     }
 }
-class Coffee extends Cafe{
+
+// concrete class 2
+class Coffee extends Beverage{
     @Override
-    void addPowder() {
-        System.out.println("Adding coffee powder");
+    void addLeaves() {
+        System.out.println("Adding coffee leaves");
     }
+
     @Override
-    void addFluid() {
-        System.out.println("Adding buffalo milk");
+    void addExtras() {
+        System.out.println("Adding small amount of honey");
     }
 }
+
 public class TemplateDesignPattern {
     public static void main(String[] args) {
-        Cafe tea = new Tea();
-        tea.prepareDrink();
-        Cafe coffee = new Coffee();
-        coffee.prepareDrink();
+        Beverage teaBeverage = new Tea();
+        teaBeverage.makeBeverage();
+        Beverage coffeeBeverage = new Coffee();
+        coffeeBeverage.makeBeverage();
     }
 }

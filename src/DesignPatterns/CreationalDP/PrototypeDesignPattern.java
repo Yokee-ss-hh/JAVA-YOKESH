@@ -57,7 +57,7 @@ class Worker implements Cloneable{
     }
 }
 
-public class Employee{
+class Employee{
     public static void main(String[] args) throws CloneNotSupportedException{
         Officer officer = new Officer();
         officer.setName("yokesh");

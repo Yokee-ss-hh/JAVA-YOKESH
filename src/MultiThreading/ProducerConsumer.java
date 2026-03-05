@@ -1,4 +1,4 @@
-package org.dsa;
+package MultiThreading;
 
 import java.util.LinkedList;
 import java.util.Queue;

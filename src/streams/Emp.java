@@ -1,4 +1,4 @@
-package org.dsa.streams;
+package streams;
 
 public class Emp {
     public int sal1;

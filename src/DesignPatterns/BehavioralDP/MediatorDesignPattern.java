@@ -1,70 +1,73 @@
 package DesignPatterns.BehavioralDP;
+// Mediator Pattern is a behavioral design pattern that reduces direct dependencies between objects by introducing a mediator object.
+// Mediator: A interface with mediating methods
+// Concrete Mediator: A class implementing Mediator
+// Colleague: A abstract class defining how participants looks like
+// Concrete Colleagues: A group of classes extending Colleague behavior
 
-import java.util.ArrayList;
-import java.util.List;
-
-// Mediator helps in establishing loosely coupled communication between objects and helps in reducing the direct references to each other.
-// Mediator design pattern is very helpful in an enterprise application where multiple objects are
-// interacting with each other. If the objects interact with each other directly, the system components
-// are tightly-coupled with each other that makes higher maintainability cost and not hard to extend.
-// Mediator pattern focuses on provide a mediator between objects for communication and help in
-// implementing lose-coupling between objects.
-interface ChatServer{
-    void addUser(Participant participant);
-    void sendMessage(Participant participant, String message);
+interface AirControlTower{
+    void requestLanding(Flight flight);
 }
-class OnlineChatServer implements ChatServer{
-    List<Participant> participants;
-    OnlineChatServer(){
-        this.participants = new ArrayList<>();
-    }
+
+class AirportTrafficTower implements AirControlTower{
+    private boolean runwayAvailable = true;
     @Override
-    public void addUser(Participant participant) {
-        participants.add(participant);
-    }
-    @Override
-    public void sendMessage(Participant participant, String message) {
-        for(Participant p: participants){
-            if(participant != p){
-                p.receiveMessage(message,participant);
-            }
+    public void requestLanding(Flight flight) {
+
+        if (runwayAvailable) {
+            System.out.println("Runway available. Landing permitted for " + flight.getName());
+            runwayAvailable = false;
+        } else {
+            System.out.println("Runway busy. " + flight.getName() + " please wait.");
         }
     }
-}
-class Participant{
-    private String userName;
-    private ChatServer chatServer;
-    Participant(String userName){
-        this.userName = userName;
-    }
-    public void joinGroup(ChatServer chatServer){
-        this.chatServer = chatServer;
-        chatServer.addUser(this);
-    }
-    public void sendMessage(String message){
-        System.out.println("You are sending message :"+message);
-        chatServer.sendMessage(this,message);
-    }
-    public void receiveMessage(String message, Participant user){
-        System.out.println("Received message from "+user.userName+": "+message);
+    public void freeRunway() {
+        runwayAvailable = true;
+        System.out.println("Runway is now free.");
     }
 }
+
+abstract class Flight{
+    protected AirControlTower airControlTower;
+    protected String name;
+    public String getName() {
+        return name;
+    }
+    Flight(AirControlTower airControlTower, String name){
+        this.airControlTower=airControlTower;
+        this.name=name;
+    }
+    public abstract void requestLanding();
+}
+
+class ConsumerFlight extends Flight{
+    public ConsumerFlight(AirportTrafficTower att, String name) {
+        super(att, name);
+    }
+    @Override
+    public void requestLanding() {
+        airControlTower.requestLanding(this);
+    }
+}
+
+class CarrierFlight extends Flight {
+    public CarrierFlight(AirportTrafficTower att, String name) {
+        super(att, name);
+    }
+    @Override
+    public void requestLanding() {
+        airControlTower.requestLanding(this);
+    }
+}
+
 public class MediatorDesignPattern {
     public static void main(String[] args) {
-        ChatServer chatServer = new OnlineChatServer();
-        Participant user1 = new Participant("yokesh");
-        Participant user2 = new Participant("kusuma");
-        Participant user3 = new Participant("yoki yokee");
-        user1.joinGroup(chatServer);
-        user2.joinGroup(chatServer);
-        user3.joinGroup(chatServer);
-
-        user1.sendMessage("Hi guys, I am yokesh");
-
-        user2.sendMessage("Hey Yokesh How are you");
-
-        user1.sendMessage("I am fine");
-
-        user3.sendMessage("em andaru tinnara");
+        AirportTrafficTower airportTrafficTower = new AirportTrafficTower();
+        Flight consumerFlight = new CarrierFlight(airportTrafficTower,"X92JAR");
+        Flight carrierFlight = new CarrierFlight(airportTrafficTower,"IU908ZX");
+        consumerFlight.requestLanding();
+        carrierFlight.requestLanding();
+        airportTrafficTower.freeRunway();
+        carrierFlight.requestLanding();
     }
 }
